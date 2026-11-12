@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#ff70a6">
+<meta name="description" content="Calistung Ceria — permainan literasi, berhitung, pola, dan telusur huruf untuk anak TK. Modul 1 Toko Aplikasi Edukasi AwwanMahda.">
+<title>Calistung Ceria — Modul TK</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+  :root{
+    --pink:#ff70a6; --pink-d:#e7548c; --violet:#7c3aed; --ink:#33272f;
+    --bg:#fff7fb; --card:#ffffff; --ok:#22a06b; --soft:#ffe3ef;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Baloo 2","Comic Sans MS","Segoe UI Rounded",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(180deg,#ffeef6 0%,#fff7fb 40%,#f3efff 100%);
+    color:var(--ink); min-height:100vh;
+  }
+  .wrap{max-width:560px;margin:0 auto;padding:16px 16px 40px}
+  header.brand{text-align:center;padding:10px 0 2px}
+  header.brand .logo{font-size:44px;line-height:1}
+  header.brand h1{margin:4px 0 2px;font-size:30px;color:var(--pink-d);letter-spacing:.3px}
+  header.brand p{margin:0;font-size:14px;color:#7a6872}
+  .card{background:var(--card);border-radius:20px;padding:16px;box-shadow:0 6px 18px rgba(231,84,140,.12);margin-top:14px}
+  .hello{font-size:20px;font-weight:700}
+  .note{font-size:14px;line-height:1.55;color:#57444e}
+  .note b{color:var(--pink-d)}
+  .namerow{display:flex;gap:8px;margin-top:10px}
+  .namerow input{flex:1;font:inherit;font-size:15px;padding:10px 12px;border:2px solid var(--soft);border-radius:12px;outline:none}
+  .namerow input:focus{border-color:var(--pink)}
+  button{font:inherit;cursor:pointer;border:none}
+  .btn{background:var(--pink);color:#fff;font-weight:700;padding:11px 18px;border-radius:999px;font-size:15px;box-shadow:0 4px 10px rgba(231,84,140,.35)}
+  .btn:active{transform:scale(.97)}
+  .btn.ghost{background:#fff;color:var(--pink-d);border:2px solid var(--soft);box-shadow:none}
+  .btn.violet{background:var(--violet);box-shadow:0 4px 10px rgba(124,58,237,.3)}
+  h2.group{font-size:19px;margin:22px 4px 4px;color:var(--violet)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+  .act{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:var(--card);
+       border-radius:18px;padding:14px;border:2px solid #fdf0f6;box-shadow:0 4px 12px rgba(51,39,47,.06)}
+  .act:active{transform:scale(.98)}
+  .act .ic{font-size:30px}
+  .act .nm{font-weight:800;font-size:16px}
+  .act .ds{font-size:12.5px;color:#8a7480;line-height:1.35}
+  footer{margin-top:26px;text-align:center;font-size:12.5px;color:#9b8592;line-height:1.6;padding:0 8px}
+
+  /* ===== layar permainan ===== */
+  .screen{display:none}
+  .screen.on{display:block}
+  .topbar{display:flex;align-items:center;gap:10px;margin-top:6px}
+  .back{background:#fff;border:2px solid var(--soft);width:42px;height:42px;border-radius:50%;font-size:18px;flex:none}
+  .topbar .ttl{font-weight:800;font-size:17px;flex:1}
+  .stars{font-weight:800;color:#e8930c;font-size:16px}
+  .progwrap{height:10px;background:#ffe3ef;border-radius:99px;margin:12px 0 4px;overflow:hidden}
+  .prog{height:100%;background:linear-gradient(90deg,var(--pink),var(--violet));width:0%;transition:width .3s}
+  .qcount{font-size:13px;color:#8a7480;font-weight:700}
+  .instr{font-size:17px;font-weight:700;line-height:1.45;margin:10px 2px 0}
+  .speakrow{margin-top:8px}
+  .speak{background:#eef2ff;color:#3730a3;font-weight:700;padding:8px 14px;border-radius:999px;font-size:14px}
+  .stage{background:var(--card);border-radius:20px;box-shadow:0 6px 18px rgba(51,39,47,.08);
+         padding:20px 14px;margin-top:12px;text-align:center;min-height:120px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px}
+  .bigword{font-size:44px;font-weight:800;letter-spacing:1px}
+  .bigemoji{font-size:64px;line-height:1.15}
+  .emojigroup{font-size:34px;line-height:1.5;letter-spacing:4px;word-break:break-all}
+  .storytext{font-size:19px;line-height:1.6;text-align:left}
+  .qtext{font-size:19px;font-weight:800;line-height:1.45}
+  .crossed{opacity:.3;filter:grayscale(1)}
+  .plus{font-size:34px;font-weight:800;color:var(--violet)}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .opts.one{grid-template-columns:1fr}
+  .opt{background:#fff;border:3px solid var(--soft);border-radius:18px;padding:14px 8px;font-size:22px;font-weight:800;
+       min-height:64px;display:flex;align-items:center;justify-content:center;text-align:center;box-shadow:0 3px 8px rgba(51,39,47,.05)}
+  .opt .em{font-size:38px}
+  .opt:active{transform:scale(.97)}
+  .opt.right{border-color:var(--ok);background:#e9f9f1}
+  .opt.wrong{border-color:#e5484d;background:#fdeeee;animation:shake .3s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .feedback{min-height:30px;text-align:center;font-weight:800;font-size:17px;margin-top:12px}
+  .feedback.good{color:var(--ok)} .feedback.try{color:#d97706}
+
+  /* ===== tracing ===== */
+  .tracebox{position:relative;width:min(320px,86vw);height:min(320px,86vw);margin:10px auto 0;background:#fff;
+            border-radius:20px;box-shadow:0 6px 18px rgba(51,39,47,.08);overflow:hidden}
+  .traceguide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+              font-size:min(230px,62vw);font-weight:800;color:rgba(124,58,237,.14);user-select:none;pointer-events:none}
+  canvas#trace{position:absolute;inset:0;touch-action:none}
+  .traceinfo{text-align:center;margin-top:10px;font-size:16px;font-weight:700}
+  .tracerow{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+
+  /* ===== selesai ===== */
+  .endstars{font-size:40px;text-align:center;letter-spacing:4px}
+  .endmsg{text-align:center;font-size:20px;font-weight:800;margin-top:6px}
+  .offscreen{background:#eefbf4;border:2px dashed #9adbbc;border-radius:16px;padding:12px 14px;font-size:14.5px;line-height:1.55;margin-top:14px}
+  .endrow{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .confetti{position:fixed;top:-40px;font-size:26px;pointer-events:none;animation:fall linear forwards;z-index:50}
+  @keyframes fall{to{transform:translateY(105vh) rotate(320deg);opacity:.9}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ================= BERANDA ================= -->
+  <section id="screen-home" class="screen on">
+    <header class="brand">
+      <div class="logo">🎓</div>
+      <h1>Calistung Ceria</h1>
+      <p>Modul 1 · Anak TK — bunyi, huruf, angka &amp; pola lewat bermain</p>
+    </header>
+
+    <div class="card">
+      <div class="hello">Halo, <span id="childName">Teman Kecil</span>! 👋</div>
+      <p class="note">Pilih permainan di bawah. Satu permainan berisi <b>10 soal</b>, cukup <b>5–10 menit</b> —
+      setelah itu istirahat dan bergerak ya. Orang tua/guru: dampingi anak, bacakan soal dengan tombol 🔊 bila perlu.</p>
+      <div class="namerow">
+        <input id="nameInput" type="text" maxlength="20" placeholder="Nama anak (boleh diisi)">
+        <button class="btn" id="saveName">Simpan</button>
+      </div>
+    </div>
+
+    <div id="menuGroups"></div>
+
+    <div class="card">
+      <p class="note"><b>Untuk orang tua &amp; guru:</b> Calistung Ceria disusun mengikuti Capaian Pembelajaran
+      Fase Fondasi (Kemendikdasmen) — literasi dan matematika dibangun lewat bermain yang bermakna, bukan hafalan semata.
+      Aplikasi ini <b>menstimulasi kesiapan belajar</b>; setiap anak berkembang dengan kecepatannya sendiri.
+      Akhiri sesi dengan kegiatan di luar layar yang disarankan di akhir permainan.</p>
+    </div>
+
+    <footer>© 2026 AwwanMahda · Toko Aplikasi Edukasi<br>
+    Calistung Ceria v2.0 — dibangun ulang sebagai template baku proyek.</footer>
+  </section>
+
+  <!-- ================= PERMAINAN ================= -->
+  <section id="screen-game" class="screen">
+    <div class="topbar">
+      <button class="back" id="btnBack" aria-label="Kembali">⬅</button>
+      <div class="ttl" id="gameTitle">Permainan</div>
+      <div class="stars">⭐ <span id="starCount">0</span></div>
+    </div>
+    <div class="progwrap"><div class="prog" id="progBar"></div></div>
+    <div class="qcount" id="qCount">Soal 1 dari 10</div>
+    <div class="instr" id="qInstr"></div>
+    <div class="speakrow"><button class="speak" id="btnSpeak">🔊 Dengarkan soal</button></div>
+    <div class="stage" id="qStage"></div>
+    <div class="opts" id="qOpts"></div>
+    <div class="feedback" id="qFeed"></div>
+  </section>
+
+  <!-- ================= TRACING ================= -->
+  <section id="screen-trace" class="screen">
+    <div class="topbar">
+      <button class="back" id="btnBackTrace" aria-label="Kembali">⬅</button>
+      <div class="ttl">✏️ Telusur Huruf</div>
+      <div class="stars">⭐ <span id="traceStars">0</span></div>
+    </div>
+    <div class="progwrap"><div class="prog" id="traceProg"></div></div>
+    <div class="qcount" id="traceCount">Huruf 1 dari 10</div>
+    <div class="instr">Telusur huruf besar ini dengan jarimu, ikuti bentuknya pelan-pelan.</div>
+    <div class="speakrow"><button class="speak" id="btnSpeakTrace">🔊 Dengarkan huruf</button></div>
+    <div class="tracebox">
+      <div class="traceguide" id="traceGuide">A</div>
+      <canvas id="trace" width="640" height="640"></canvas>
+    </div>
+    <div class="traceinfo" id="traceWord">A untuk Ayam 🐔</div>
+    <div class="tracerow">
+      <button class="btn ghost" id="btnClearTrace">🧹 Ulangi</button>
+      <button class="btn" id="btnNextTrace">Huruf Berikutnya ➜</button>
+    </div>
+    <div class="feedback" id="traceFeed"></div>
+  </section>
+
+  <!-- ================= SELESAI ================= -->
+  <section id="screen-end" class="screen">
+    <div class="card" style="margin-top:26px">
+      <div class="endstars" id="endStars">⭐⭐⭐</div>
+      <div class="endmsg" id="endMsg">Hebat!</div>
+      <p class="note" style="text-align:center" id="endDetail"></p>
+      <div class="offscreen" id="endOffscreen"></div>
+      <div class="endrow">
+        <button class="btn violet" id="btnAgain">🔁 Main Lagi</button>
+        <button class="btn" id="btnMenu">🏠 Kembali ke Menu</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+<script>
+"use strict";
+/* ================= util ================= */
+const $ = s => document.querySelector(s);
+const rnd = (a,b) => a + Math.floor(Math.random()*(b-a+1));
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+const shuffle = arr => { const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const sample = (arr,n) => shuffle(arr).slice(0,n);
+function numOptions(correct, lo, hi, count){
+  const set = new Set([correct]);
+  let guard = 0;
+  while(set.size < count && guard++ < 60){
+    const c = correct + pick([-2,-1,1,2,3,-3]);
+    if(c >= lo && c <= hi) set.add(c);
+  }
+  while(set.size < count) set.add(rnd(lo,hi));
+  return shuffle([...set]).map(n => ({ html:String(n), label:String(n), ok:n === correct }));
+}
+function speak(text){
+  try{
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "id-ID"; u.rate = 0.95;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  }catch(e){ /* perangkat tanpa TTS: abaikan */ }
+}
+function confetti(n){
+  const em = ["🎉","⭐","🎈","✨","💖"];
+  for(let i=0;i<(n||14);i++){
+    const s = document.createElement("span");
+    s.className = "confetti"; s.textContent = pick(em);
+    s.style.left = rnd(2,96) + "vw";
+    s.style.animationDuration = (1.6 + Math.random()*1.6) + "s";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(), 3400);
+  }
+}
+
+/* ================= data ================= */
+const WORDS = [
+  {w:"Sapi", e:"🐄"}, {w:"Bola", e:"⚽"}, {w:"Apel", e:"🍎"}, {w:"Buku", e:"📖"},
+  {w:"Susu", e:"🥛"}, {w:"Ikan", e:"🐟"}, {w:"Roti", e:"🍞"}, {w:"Topi", e:"🎩"},
+  {w:"Ayam", e:"🐔"}, {w:"Bebek", e:"🦆"}, {w:"Gajah", e:"🐘"}, {w:"Jeruk", e:"🍊"},
+  {w:"Pisang", e:"🍌"}, {w:"Kucing", e:"🐱"}, {w:"Anggur", e:"🍇"}
+];
+const SYLLABLES = [ // [suku1, suku2, kata] — urutan suku BENAR (perbaikan P0 audit v1)
+  ["Sa","pi","Sapi"], ["Bu","ku","Buku"], ["Bo","la","Bola"], ["A","yam","Ayam"],
+  ["Pi","sang","Pisang"], ["Je","ruk","Jeruk"], ["Ku","cing","Kucing"], ["Be","bek","Bebek"],
+  ["Ga","jah","Gajah"], ["Ro","ti","Roti"], ["Su","su","Susu"], ["To","pi","Topi"]
+];
+const STORIES = [
+  {t:"Dito mempunyai seekor kucing. Setiap pagi, kucing itu minum susu dengan lahap.", q:"Apa yang diminum kucing Dito?", a:"Susu", o:["Susu","Bola","Roti"]},
+  {t:"Sinta pergi ke kebun bersama Ibu. Ia memetik tiga buah apel yang merah.", q:"Buah apa yang dipetik Sinta?", a:"Apel", o:["Jeruk","Apel","Pisang"]},
+  {t:"Hujan turun dengan deras. Raka memakai payung biru agar tidak basah.", q:"Apa yang dipakai Raka saat hujan?", a:"Payung", o:["Topi","Payung","Buku"]},
+  {t:"Di kandang ada lima ekor ayam. Setiap pagi ayam itu berkokok membangunkan desa.", q:"Hewan apa yang berkokok setiap pagi?", a:"Ayam", o:["Bebek","Ayam","Ikan"]},
+  {t:"Bima suka membaca sebelum tidur. Malam ini ia membaca buku tentang gajah.", q:"Buku Bima bercerita tentang apa?", a:"Gajah", o:["Kucing","Gajah","Sapi"]},
+  {t:"Nina menanam biji kacang di pot kecil. Setiap hari ia menyiramnya dengan air.", q:"Apa yang dilakukan Nina setiap hari pada tanamannya?", a:"Menyiramnya", o:["Menyiramnya","Memetiknya","Memotongnya"]}
+];
+const RIDDLES = [ // petunjuk TIDAK menampilkan gambar jawaban (perbaikan P0 audit v1)
+  {c:"Aku buah berwarna kuning. Bentukku melengkung seperti senyum. Monyet sangat menyukaiku.", w:"Pisang"},
+  {c:"Aku hewan berkaki empat. Aku suka mengeong dan mengejar tikus.", w:"Kucing"},
+  {c:"Aku bulat dan bisa ditendang. Anak-anak bermain denganku di lapangan.", w:"Bola"},
+  {c:"Aku hewan besar dengan belalai panjang. Telingaku lebar sekali.", w:"Gajah"},
+  {c:"Aku hidup di air dan bernapas dengan insang. Aku bisa berenang dengan siripku.", w:"Ikan"},
+  {c:"Aku makanan dari tepung yang dipanggang. Enak dimakan saat sarapan dengan susu.", w:"Roti"},
+  {c:"Aku dipasang di kepala untuk melindungimu dari panas matahari.", w:"Topi"},
+  {c:"Aku minuman putih dari sapi. Minum aku supaya tulangmu kuat.", w:"Susu"}
+];
+const COUNT_EMOJI = ["🍎","⭐","🐥","🌸","🍓","🐠","🍊","🦋"];
+const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const TRACE_WORDS = {A:"Ayam 🐔",B:"Bola ⚽",C:"Cicak 🦎",D:"Domba 🐑",E:"Elang 🦅",F:"Foto 📷",G:"Gajah 🐘",H:"Harimau 🐯",I:"Ikan 🐟",J:"Jeruk 🍊",K:"Kucing 🐱",L:"Lebah 🐝",M:"Mata 👁️",N:"Naga 🐉",O:"Obat 💊",P:"Pisang 🍌",Q:"Quran 📗",R:"Roti 🍞",S:"Sapi 🐄",T:"Topi 🎩",U:"Ular 🐍",V:"Vas 🏺",W:"Wortel 🥕",X:"Xilofon 🎵",Y:"Yoyo 🪀",Z:"Zebra 🦓"};
+
+/* ================= pembangkit soal ================= */
+function gHurufAwal(){
+  const it = pick(WORDS), first = it.w[0];
+  const others = sample(LETTERS.filter(l => l !== first && l !== first.toLowerCase()), 3);
+  const opts = shuffle([first, ...others]).map(l => ({html:l, label:"Huruf "+l, ok:l===first}));
+  return { instr:"Huruf apa huruf pertama nama gambar ini?",
+    stage:`<div class="bigemoji">${it.e}</div><div class="bigword">_ ${it.w.slice(1)}</div>`,
+    tts:`Gambar ini namanya ${it.w}. Huruf apa huruf pertama dari kata ${it.w}?`, options:opts };
+}
+function gCariHuruf(){
+  const L = pick(LETTERS);
+  const shown = Math.random() < 0.5 ? L : L.toLowerCase();
+  const others = sample(LETTERS.filter(x => x !== L), 5).map(x => Math.random()<0.5 ? x : x.toLowerCase());
+  const tiles = shuffle([shown, ...others]);
+  return { instr:`Cari dan ketuk huruf ${shown} di antara huruf-huruf ini!`,
+    stage:`<div class="bigword">🔎 ${shown}</div>`,
+    tts:`Cari dan ketuk huruf ${shown}.`,
+    options: tiles.map(t => ({html:t, label:"Huruf "+t, ok:t===shown})), wide:true };
+}
+function gBacaKata(){
+  const it = pick(WORDS);
+  const others = sample(WORDS.filter(x => x.w !== it.w), 2);
+  const opts = shuffle([it, ...others]).map(x => ({html:`<span class="em">${x.e}</span>`, label:x.w, ok:x.w===it.w}));
+  return { instr:"Baca kata ini baik-baik, lalu ketuk gambar yang cocok!",
+    stage:`<div class="bigword">${it.w}</div>`,
+    tts:"Baca kata pada layar, lalu ketuk gambar yang cocok dengan kata itu.", options:opts };
+}
+function gHurufHilang(){
+  const it = pick(WORDS.filter(x => x.w.length >= 4));
+  const idx = rnd(1, it.w.length-1), missing = it.w[idx];
+  const shown = it.w.slice(0,idx) + "_" + it.w.slice(idx+1);
+  const others = sample("abcdefghijklmnopqrstuvwxyz".split("").filter(l => l !== missing.toLowerCase()), 3);
+  const opts = shuffle([missing.toLowerCase(), ...others]).map(l => ({html:l, label:"Huruf "+l, ok:l===missing.toLowerCase()}));
+  return { instr:"Huruf apa yang hilang dari kata ini?",
+    stage:`<div class="bigemoji">${it.e}</div><div class="bigword">${shown}</div>`,
+    tts:"Satu huruf hilang dari kata pada layar. Huruf apa yang hilang?", options:opts };
+}
+function gBaca3Kata(){
+  const it = pick(WORDS);
+  const others = sample(WORDS.filter(x => x.w !== it.w), 2);
+  const opts = shuffle([it, ...others]).map(x => ({html:x.w, label:x.w, ok:x.w===it.w}));
+  return { instr:"Lihat gambarnya, lalu ketuk kata yang cocok!",
+    stage:`<div class="bigemoji">${it.e}</div>`,
+    tts:"Lihat gambar pada layar, lalu ketuk kata yang cocok dengan gambar itu.", options:opts };
+}
+function gCerita(){
+  const s = pick(STORIES);
+  const opts = shuffle(s.o).map(x => ({html:x, label:x, ok:x===s.a}));
+  return { instr:"Dengarkan atau baca cerita pendek ini, lalu jawab pertanyaannya!",
+    stage:`<div class="storytext">${s.t}</div><div class="qtext">${s.q}</div>`,
+    tts:`${s.t} ${s.q}`, options:opts };
+}
+function gSusunSuku(){
+  const [s1, s2, word] = pick(SYLLABLES);
+  const decoys = sample(SYLLABLES.filter(x => x[2] !== word), 2).map(x => x[2]);
+  const opts = shuffle([word, ...decoys]).map(x => ({html:x, label:x, ok:x===word}));
+  return { instr:"Gabungkan dua suku kata ini menjadi satu kata!",
+    stage:`<div class="bigword">${s1} + ${s2} = ?</div>`,
+    tts:"Gabungkan dua suku kata pada layar menjadi satu kata yang benar.", options:opts };
+}
+function group(e, n, crossFrom){
+  let h = "";
+  for(let i=0;i<n;i++) h += (crossFrom !== undefined && i >= crossFrom) ? `<span class="crossed">${e}</span>` : e;
+  return `<span class="emojigroup">${h}</span>`;
+}
+function gHitungBenda(){
+  const e = pick(COUNT_EMOJI), n = rnd(1,10);
+  return { instr:"Hitung benda ini satu-satu. Ada berapa semuanya?",
+    stage:group(e,n), tts:"Hitung benda pada layar satu-satu. Ada berapa semuanya?",
+    options: numOptions(n,0,12,3) };
+}
+function gCocokkan(){
+  const e = pick(COUNT_EMOJI), n = rnd(2,9);
+  const counts = numOptions(n,1,10,3).map(o => Number(o.label));
+  const opts = counts.map(c => ({html:group(e,c), label:c+" benda", ok:c===n}));
+  return { instr:`Ketuk kelompok yang jumlahnya ${n}!`,
+    stage:`<div class="bigword">${n}</div>`, tts:`Ketuk kelompok benda yang jumlahnya ${n}.`, options:opts, oneCol:false };
+}
+function gTambahBenda(){
+  const e = pick(COUNT_EMOJI); const a = rnd(1,6), b = rnd(1,10-a), sum = a+b;
+  return { instr:"Hitung semua bendanya. Berapa jumlahnya?",
+    stage:`${group(e,a)}<span class="plus">+</span>${group(e,b)}`,
+    tts:"Hitung semua benda pada layar. Berapa jumlahnya?",
+    options: numOptions(sum,0,12,3) };
+}
+function gKurangiBenda(){
+  const e = pick(COUNT_EMOJI); const a = rnd(4,10), b = rnd(1,a-1), dif = a-b;
+  return { instr:"Sebagian benda dicoret karena diambil. Berapa yang tersisa?",
+    stage:group(e,a,a-b), tts:"Berapa benda yang tersisa setelah sebagian diambil?",
+    options: numOptions(dif,0,12,3) };
+}
+function gTambahAngka(){
+  const a = rnd(1,7), b = rnd(1,10-a), sum = a+b;
+  return { instr:"Berapa hasil penjumlahan ini?", stage:`<div class="bigword">${a} + ${b} = ?</div>`,
+    tts:`Berapa ${a} tambah ${b}?`,
+    options: numOptions(sum,0,12,3) };
+}
+function gKurangiAngka(){
+  const a = rnd(3,10), b = rnd(1,a-1), dif = a-b;
+  return { instr:"Berapa hasil pengurangan ini?", stage:`<div class="bigword">${a} − ${b} = ?</div>`,
+    tts:`Berapa ${a} kurang ${b}?`,
+    options: numOptions(dif,0,12,3) };
+}
+function gBesarKecil(){
+  const bigger = Math.random() < 0.5;
+  let a = rnd(1,10), b = rnd(1,10); if(a===b) b = b===10 ? 9 : b+1;
+  const correct = bigger ? Math.max(a,b) : Math.min(a,b);
+  let c = rnd(1,10); if(c===correct) c = correct===10 ? 9 : correct+1;
+  const opts = shuffle([a,b,c]).map(n => ({html:String(n), label:String(n), ok:n===correct}));
+  return { instr: bigger ? "Ketuk angka yang lebih BESAR!" : "Ketuk angka yang lebih kecil!",
+    stage:`<div class="bigword">${a} &nbsp;·&nbsp; ${b}</div>`,
+    tts: bigger ? `Di antara ${a} dan ${b}, mana yang lebih besar?` : `Di antara ${a} dan ${b}, mana yang lebih kecil?`,
+    options: opts };
+}
+function gUrutan(){
+  const s = rnd(1,7), seq = [s, s+1, s+2, s+3], missPos = rnd(0,3), missing = seq[missPos];
+  const shown = seq.map((n,i) => i===missPos ? "?" : n).join(" · ");
+  return { instr:"Angka apa yang hilang dari urutan ini?",
+    stage:`<div class="bigword">${shown}</div>`, tts:"Angka apa yang hilang dari urutan pada layar?",
+    options: numOptions(missing,1,12,3) };
+}
+function gPola(){
+  const pairs = [["🍎","🍌"],["⭐","🌙"],["🐶","🐱"],["🔴","🔵"],["🌸","🍀"]];
+  const [x,y] = pick(pairs); const abc = Math.random() < 0.35;
+  const z = pick(["🍇","💛","🐥"].filter(v => v!==x && v!==y));
+  const seq = abc ? [x,y,z,x,y] : [x,y,x,y,x];
+  const next = abc ? z : y;
+  const opts = shuffle([next, x, y, z]).filter((v,i,a)=>a.indexOf(v)===i).slice(0,3);
+  if(!opts.includes(next)) opts[0] = next;
+  return { instr:"Perhatikan polanya. Gambar apa yang datang berikutnya?",
+    stage:`<div class="emojigroup">${seq.join(" ")} ❓</div>`, tts:"Perhatikan pola gambar pada layar. Gambar apa yang datang berikutnya?",
+    options: shuffle(opts).map(v => ({html:`<span class="em">${v}</span>`, label:"gambar", ok:v===next})) };
+}
+function gBerbeda(){
+  const pairs = [["🍎","🍏"],["🐶","🐱"],["⚽","🏀"],["🚗","🚕"],["🐥","🦆"],["🍓","🍒"]];
+  const [base, odd] = pick(pairs);
+  const pos = rnd(0,5);
+  const tiles = Array.from({length:6}, (_,i) => i===pos ? odd : base);
+  return { instr:"Satu gambar berbeda dari yang lain. Ketuk gambar itu!",
+    stage:`<div class="bigemoji">👀</div>`, tts:"Satu gambar berbeda dari yang lain. Ketuk gambar yang berbeda itu.",
+    options: tiles.map((t,i) => ({html:`<span class="em">${t}</span>`, label:"gambar", ok:i===pos})), wide:true };
+}
+function gTebak(){
+  const r = pick(RIDDLES);
+  const me = WORDS.find(x => x.w === r.w);
+  const others = sample(WORDS.filter(x => x.w !== r.w), 2);
+  const opts = shuffle([me, ...others]).map(x => ({html:`<span class="em">${x.e}</span>`, label:x.w, ok:x.w===r.w}));
+  return { instr:"Dengarkan teka-tekinya. Siapakah aku?",
+    stage:`<div class="storytext">“${r.c}”</div>`, tts:r.c + " Siapakah aku?", options:opts };
+}
+
+/* ================= katalog aktivitas ================= */
+const OFFSCREEN = {
+  literasi:"📚 Kegiatan di luar layar: ajak anak mencari huruf pertama namanya pada buku, kemasan makanan, atau papan nama di sekitar rumah.",
+  hitung:"🧺 Kegiatan di luar layar: hitung bersama 10 benda sungguhan di rumah — sendok, kelereng, atau buah — sambil menyentuhnya satu-satu.",
+  pola:"🥄 Kegiatan di luar layar: susun pola sungguhan bergantian, misalnya sendok–garpu–sendok–garpu, lalu minta anak melanjutkannya.",
+  trace:"✋ Kegiatan di luar layar: gambar huruf dengan jari di udara, di pasir, atau di punggung Ayah/Bunda, lalu tebak hurufnya."
+};
+const ACTS = [
+  {id:"huruf-awal", group:"literasi", icon:"🔤", name:"Huruf Awal", desc:"Huruf pertama dari nama gambar", gen:gHurufAwal},
+  {id:"cari-huruf", group:"literasi", icon:"🔎", name:"Cari Huruf", desc:"Temukan huruf di antara huruf lain", gen:gCariHuruf},
+  {id:"baca-kata", group:"literasi", icon:"📖", name:"Baca Kata", desc:"Baca kata, ketuk gambar yang cocok", gen:gBacaKata},
+  {id:"huruf-hilang", group:"literasi", icon:"🧩", name:"Huruf Hilang", desc:"Lengkapi huruf yang hilang", gen:gHurufHilang},
+  {id:"baca-3-kata", group:"literasi", icon:"🖼️", name:"Baca 3 Kata", desc:"Pilih kata yang cocok dengan gambar", gen:gBaca3Kata},
+  {id:"cerita", group:"literasi", icon:"📚", name:"Cerita Pendek", desc:"Dengarkan cerita, jawab pertanyaan", gen:gCerita},
+  {id:"susun-suku", group:"literasi", icon:"🧱", name:"Susun Suku Kata", desc:"Gabungkan dua suku kata", gen:gSusunSuku},
+  {id:"hitung-benda", group:"hitung", icon:"🍎", name:"Hitung Benda", desc:"Menghitung benda 1 sampai 10", gen:gHitungBenda},
+  {id:"cocokkan", group:"hitung", icon:"🎯", name:"Cocokkan Jumlah", desc:"Pilih kelompok sesuai angka", gen:gCocokkan},
+  {id:"tambah-benda", group:"hitung", icon:"➕", name:"Tambah Benda", desc:"Menjumlah dengan gambar benda", gen:gTambahBenda},
+  {id:"kurangi-benda", group:"hitung", icon:"➖", name:"Kurangi Benda", desc:"Mengurang dengan gambar benda", gen:gKurangiBenda},
+  {id:"tambah-angka", group:"hitung", icon:"🔢", name:"Tambah Angka", desc:"Penjumlahan angka sampai 10", gen:gTambahAngka},
+  {id:"kurangi-angka", group:"hitung", icon:"🔣", name:"Kurangi Angka", desc:"Pengurangan angka sampai 10", gen:gKurangiAngka},
+  {id:"besar-kecil", group:"hitung", icon:"⚖️", name:"Lebih Besar / Kecil", desc:"Membandingkan dua angka", gen:gBesarKecil},
+  {id:"urutan", group:"hitung", icon:"🪜", name:"Urutan Angka", desc:"Angka yang hilang dari urutan", gen:gUrutan},
+  {id:"pola", group:"pola", icon:"🔁", name:"Pola Ceria", desc:"Lanjutkan pola gambar", gen:gPola},
+  {id:"berbeda", group:"pola", icon:"👀", name:"Cari yang Berbeda", desc:"Temukan gambar yang berbeda", gen:gBerbeda},
+  {id:"tebak", group:"pola", icon:"❓", name:"Tebak Gambar", desc:"Jawab teka-teki gambar", gen:gTebak}
+];
+const GROUPS = [
+  {id:"literasi", title:"📖 Literasi & Bahasa"},
+  {id:"hitung", title:"🔢 Berhitung"},
+  {id:"pola", title:"🧩 Pola & Logika"}
+];
+
+/* ================= navigasi layar ================= */
+function show(id){
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
+  $("#"+id).classList.add("on");
+  window.scrollTo({top:0});
+}
+
+/* ================= menu ================= */
+function buildMenu(){
+  const host = $("#menuGroups");
+  host.innerHTML = "";
+  for(const g of GROUPS){
+    const h = document.createElement("h2"); h.className = "group"; h.textContent = g.title; host.appendChild(h);
+    const grid = document.createElement("div"); grid.className = "grid";
+    for(const a of ACTS.filter(x => x.group === g.id)){
+      const b = document.createElement("button"); b.className = "act";
+      b.innerHTML = `<span class="ic">${a.icon}</span><span class="nm">${a.name}</span><span class="ds">${a.desc}</span>`;
+      b.onclick = () => startGame(a);
+      grid.appendChild(b);
+    }
+    host.appendChild(grid);
+  }
+  const h = document.createElement("h2"); h.className = "group"; h.textContent = "✏️ Menulis Awal"; host.appendChild(h);
+  const grid = document.createElement("div"); grid.className = "grid";
+  const b = document.createElement("button"); b.className = "act";
+  b.innerHTML = `<span class="ic">✏️</span><span class="nm">Telusur Huruf</span><span class="ds">Menelusur huruf A–Z dengan jari (motorik pramenulis)</span>`;
+  b.onclick = startTrace;
+  grid.appendChild(b);
+  host.appendChild(grid);
+}
+
+/* ================= mesin permainan ================= */
+let S = null; // sesi berjalan
+function startGame(act){
+  S = { act, idx:0, score:0, tries:0, questions: Array.from({length:10}, () => act.gen()) };
+  $("#gameTitle").textContent = act.icon + " " + act.name;
+  show("screen-game");
+  renderQ();
+}
+function renderQ(){
+  const q = S.questions[S.idx];
+  S.tries = 0;
+  $("#qCount").textContent = `Soal ${S.idx+1} dari 10`;
+  $("#progBar").style.width = (S.idx/10*100) + "%";
+  $("#starCount").textContent = S.score;
+  $("#qInstr").textContent = q.instr;
+  $("#qStage").innerHTML = q.stage;
+  $("#qFeed").textContent = ""; $("#qFeed").className = "feedback";
+  const box = $("#qOpts");
+  box.className = "opts" + (q.options.length <= 2 ? " one" : "");
+  box.innerHTML = "";
+  q.options.forEach(o => {
+    const b = document.createElement("button");
+    b.className = "opt"; b.innerHTML = o.html;
+    b.onclick = () => answer(b, o, q);
+    box.appendChild(b);
+  });
+  $("#btnSpeak").onclick = () => speak(q.tts);
+}
+function answer(btn, opt, q){
+  if(opt.ok){
+    btn.classList.add("right");
+    if(S.tries === 0) S.score++;
+    $("#starCount").textContent = S.score;
+    const f = $("#qFeed"); f.textContent = "Hebat! Benar! 🎉"; f.className = "feedback good";
+    speak("Hebat! Benar!");
+    confetti(8);
+    document.querySelectorAll(".opt").forEach(x => x.disabled = true);
+    const sess = S;
+    setTimeout(() => {
+      if(S !== sess) return; // sesi sudah berganti (anak menekan Kembali) — jangan lompat soal
+      S.idx++;
+      if(S.idx >= 10) endGame();
+      else renderQ();
+    }, 1100);
+  } else {
+    S.tries++;
+    btn.classList.add("wrong"); btn.disabled = true;
+    const f = $("#qFeed"); f.textContent = "Belum tepat. Coba lagi ya, kamu pasti bisa! 😊"; f.className = "feedback try";
+    speak("Belum tepat. Coba lagi ya.");
+  }
+}
+function endGame(){
+  show("screen-end");
+  const sc = S.score;
+  $("#endStars").textContent = "⭐".repeat(Math.max(1, Math.round(sc/10*5))) + ` ${sc}/10`;
+  $("#endMsg").textContent = sc >= 8 ? "Luar biasa! 🌟" : sc >= 5 ? "Bagus sekali! 👍" : "Bagus, terus berlatih ya! 💪";
+  $("#endDetail").textContent = `Kamu menyelesaikan permainan ${S.act.name} dan mengumpulkan ${sc} bintang.`;
+  $("#endOffscreen").textContent = OFFSCREEN[S.act.group];
+  $("#btnAgain").onclick = () => startGame(S.act);
+  confetti(26);
+  speak("Permainan selesai. " + $("#endMsg").textContent);
+}
+$("#btnBack").onclick = () => show("screen-home");
+$("#btnMenu").onclick = () => show("screen-home");
+
+/* ================= tracing ================= */
+let T = null;
+function startTrace(){
+  T = { letters: sample(LETTERS, 10), idx:0, done:0, dist:0, drawing:false, last:null };
+  show("screen-trace");
+  setupTraceLetter();
+}
+function traceCtx(){ return $("#trace").getContext("2d"); }
+function setupTraceLetter(){
+  const L = T.letters[T.idx];
+  $("#traceGuide").textContent = L;
+  $("#traceWord").textContent = `${L} untuk ${TRACE_WORDS[L]}`;
+  $("#traceCount").textContent = `Huruf ${T.idx+1} dari 10`;
+  $("#traceProg").style.width = (T.idx/10*100) + "%";
+  $("#traceStars").textContent = T.done;
+  $("#traceFeed").textContent = ""; $("#traceFeed").className = "feedback";
+  T.dist = 0; T.last = null;
+  const c = $("#trace"); traceCtx().clearRect(0,0,c.width,c.height);
+  $("#btnSpeakTrace").onclick = () => speak(`Huruf ${L}. ${L} untuk ${TRACE_WORDS[L].split(" ")[0]}.`);
+}
+function tracePos(ev){
+  const c = $("#trace"), r = c.getBoundingClientRect();
+  const p = ev.touches ? ev.touches[0] : ev;
+  return { x:(p.clientX - r.left) * c.width / r.width, y:(p.clientY - r.top) * c.height / r.height };
+}
+function traceStart(ev){ ev.preventDefault(); T.drawing = true; T.last = tracePos(ev); }
+function traceMove(ev){
+  if(!T || !T.drawing) return;
+  ev.preventDefault();
+  const p = tracePos(ev), ctx = traceCtx();
+  ctx.strokeStyle = "#7c3aed"; ctx.lineWidth = 16; ctx.lineCap = "round"; ctx.lineJoin = "round";
+  ctx.beginPath(); ctx.moveTo(T.last.x, T.last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+  T.dist += Math.hypot(p.x - T.last.x, p.y - T.last.y);
+  T.last = p;
+}
+function traceEnd(){ if(T) T.drawing = false; }
+(function bindTrace(){
+  const c = $("#trace");
+  c.addEventListener("pointerdown", traceStart);
+  c.addEventListener("pointermove", traceMove);
+  window.addEventListener("pointerup", traceEnd);
+  $("#btnClearTrace").onclick = () => { const cv=$("#trace"); traceCtx().clearRect(0,0,cv.width,cv.height); T.dist = 0; };
+  $("#btnNextTrace").onclick = () => {
+    if(T.dist < 220){
+      const f = $("#traceFeed");
+      f.textContent = "Telusur dulu hurufnya sampai selesai ya ✏️"; f.className = "feedback try";
+      speak("Telusur dulu hurufnya sampai selesai ya.");
+      return;
+    }
+    T.done++;
+    confetti(8); speak("Bagus! Hurufnya selesai ditelusur.");
+    T.idx++;
+    if(T.idx >= 10){
+      S = { act:{name:"Telusur Huruf", group:"trace"}, score:T.done };
+      show("screen-end");
+      $("#endStars").textContent = "⭐⭐⭐⭐⭐ " + T.done + "/10";
+      $("#endMsg").textContent = "Jari yang terampil! ✋🌟";
+      $("#endDetail").textContent = `Kamu menelusur ${T.done} huruf hari ini. Motorik pramenulismu makin kuat.`;
+      $("#endOffscreen").textContent = OFFSCREEN.trace;
+      $("#btnAgain").onclick = startTrace;
+      confetti(26);
+    } else setupTraceLetter();
+  };
+  $("#btnBackTrace").onclick = () => show("screen-home");
+})();
+
+/* ================= nama anak ================= */
+(function initName(){
+  const saved = localStorage.getItem("cc_nama") || "";
+  if(saved){ $("#childName").textContent = saved; $("#nameInput").value = saved; }
+  $("#saveName").onclick = () => {
+    const v = $("#nameInput").value.trim();
+    localStorage.setItem("cc_nama", v);
+    $("#childName").textContent = v || "Teman Kecil";
+    speak(v ? `Halo ${v}! Ayo bermain dan belajar!` : "Halo! Ayo bermain dan belajar!");
+  };
+})();
+
+buildMenu();
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+</script>
+</body>
+</html>
