@@ -45,6 +45,22 @@
   .act .ic{font-size:30px}
   .act .nm{font-weight:800;font-size:16px}
   .act .ds{font-size:12.5px;color:#8a7480;line-height:1.35}
+  .act.locked{border-color:#fde9c8}
+  .act .lk{font-size:12.5px;font-weight:800;color:#b45309;background:#fef3c7;border-radius:99px;padding:2px 9px;margin-top:5px}
+  .procard{border:2px dashed var(--pink)}
+  .procard .btn{margin-top:10px}
+  .modalbg{position:fixed;inset:0;background:rgba(51,39,47,.55);display:none;align-items:flex-end;justify-content:center;z-index:50}
+  .modalbg.on{display:flex}
+  .modal{background:#fff;border-radius:24px 24px 0 0;padding:22px 20px 26px;max-width:560px;width:100%;max-height:88vh;overflow:auto}
+  .modal h3{margin:0 0 6px;font-size:21px;color:var(--pink-d)}
+  .modal .koderow{display:flex;gap:8px;margin-top:10px}
+  .modal .koderow input{flex:1;font:inherit;font-size:16px;padding:11px 12px;border:2px solid var(--soft);border-radius:12px;outline:none;text-transform:uppercase;min-width:0}
+  .modal .koderow input:focus{border-color:var(--pink)}
+  .modal .beli{display:block;text-align:center;margin-top:14px;text-decoration:none}
+  .modal .tutup{display:block;margin:14px auto 0;background:none;color:#8a7480;font-weight:700}
+  .kodefeed{font-size:14px;font-weight:700;margin-top:10px;min-height:20px}
+  .kodefeed.err{color:#c0392b}
+  .kodefeed.ok{color:var(--ok)}
   footer{margin-top:26px;text-align:center;font-size:12.5px;color:#9b8592;line-height:1.6;padding:0 8px}
 
   /* ===== layar permainan ===== */
@@ -120,6 +136,8 @@
       </div>
     </div>
 
+    <div class="card procard" id="proCard"></div>
+
     <div id="menuGroups"></div>
 
     <div class="card">
@@ -130,7 +148,7 @@
     </div>
 
     <footer>© 2026 AwwanMahda · Toko Aplikasi Edukasi<br>
-    Calistung Ceria v2.0 — dibangun ulang sebagai template baku proyek.</footer>
+    Calistung Ceria v2.1 (DEMO + versi penuh berkode) — dibangun ulang sebagai template baku proyek.</footer>
   </section>
 
   <!-- ================= PERMAINAN ================= -->
@@ -185,6 +203,22 @@
       </div>
     </div>
   </section>
+
+  <!-- ================= BUKA VERSI PENUH ================= -->
+  <div class="modalbg" id="unlockModal">
+    <div class="modal">
+      <h3>🔓 Buka Versi Penuh</h3>
+      <p class="note">Ini versi <b>DEMO gratis</b>: 6 permainan terbuka untuk dicoba. Versi penuh membuka <b>semua 19 permainan</b> — sekali bayar, akses selamanya, termasuk pembaruan isi modul ini.</p>
+      <p class="note">Sudah punya <b>kode akses</b>? Masukkan di sini:</p>
+      <div class="koderow">
+        <input id="kodeInput" type="text" maxlength="12" placeholder="CERIA-XXXXXX" autocomplete="off">
+        <button class="btn" id="btnKode">Buka</button>
+      </div>
+      <div class="kodefeed" id="kodeFeed"></div>
+      <a class="btn violet beli" id="btnBeli" href="https://linktr.ee/awwanmahda" target="_blank" rel="noopener">🛒 Beli Kode Akses</a>
+      <button class="tutup" id="btnTutupModal">Nanti saja</button>
+    </div>
+  </div>
 
 </div>
 <script>
@@ -442,6 +476,67 @@ const GROUPS = [
   {id:"pola", title:"🧩 Pola & Logika"}
 ];
 
+/* ================= akses demo / versi penuh (Model B) ================= */
+const DEMO_IDS = ["huruf-awal","baca-kata","hitung-benda","tambah-angka","pola"]; // + Telusur Huruf selalu terbuka
+const KODE_HASH = [
+"ef93455bb0634ffe2d529c4eec79fb30e1170d1961b6d4b7bb58c654b86681cd","7729d238b61391c2adc0ea1addba16b7367afbb28d0417b35aab21133206a12d",
+"b22044efd3f900cce8cefc3911c9783bceb0483c6188d5e13a65439f3e0f31bb","82c867315db79bd4bc7c2adfc7e0a095c3ac64d8a73e2a1991e0446683289ae9",
+"5bc891fb1affdde403133e133c5992e9fafbb5a49ac31a39e2dbe7041a364d3c","143c216d755b7c8d66fb6057a37eacffcbd370cccf3315a3de23cecbbe706d5a",
+"d3e9ea3e271bb7b2b5800d4179321799b2efffdc2f631a1f147eecf2a7840b04","f1eff7c7e09294c8fe70313ecad2fbaa462b20ffeb373e850af09bce09abf7c8",
+"13af0e6f233ae7b6c10aea4467a10a51e49dcadee892d283ddf28015e13dacb7","83ba983ce319df0882cfc55db571b3ba21f3e700701fdb876115a63f27269ef6",
+"a8e93ed679e48afe52cdd0f8182965a7d838eeab76496c9b5a5b36c7879af3e4","4813e4fd165f828ce9f8d539964d9be5655f826e8a47701803dc31a681572999",
+"8c3f94b9dc31bb2b7a47bd60bd6ec35815975f33cd32cfe5c0800890c340b8a2","e98102dfe385346d275f9bfe020dc1a3b7eccfb7cc197268d2501dd7c34c68f3",
+"490a1aed5e7a96ccfa6ed67fc46c3d41ceb633ed20e1eeb3fc064a59207dfe05","d3f392798526e458b2125c5c07846b8f6084148069291fe0d35ee905a6b8112b",
+"7143943dbc96f6021bd0d81db170fb9487ad32683b4650c4157b98207194a195","cfc57f9050e649499cacd575599fe52ac3a85643d95c029c289c840ac73f28d8",
+"2671d0c20582e8db86f2cab4118020ad7cb1223a1ab18dca42edbef7acd7c5a0","c4a90b969f1f239bd524f1ce4baa8cf62b3733e4c6474ef9708543cf8341ff34"
+];
+const LINK_BELI = "https://linktr.ee/awwanmahda"; // ganti ke tautan produk Lynk.id bila sudah dibuat
+let pendingAct = null;
+function sudahBuka(){ return localStorage.getItem("cc_unlocked") === "1"; }
+function terkunci(a){ return !sudahBuka() && !DEMO_IDS.includes(a.id); }
+function tampilKunci(act){
+  pendingAct = act || null;
+  const f = $("#kodeFeed"); f.textContent = ""; f.className = "kodefeed";
+  $("#kodeInput").value = "";
+  $("#btnBeli").href = LINK_BELI;
+  $("#unlockModal").classList.add("on");
+}
+function tutupKunci(){ $("#unlockModal").classList.remove("on"); }
+async function cekKode(){
+  const v = $("#kodeInput").value.trim().toUpperCase();
+  const f = $("#kodeFeed");
+  if(!v){ f.textContent = "Tulis dulu kodenya ya."; f.className = "kodefeed err"; return; }
+  if(!window.crypto || !crypto.subtle){ f.textContent = "Peramban ini tidak mendukung pemeriksaan kode. Coba Chrome terbaru."; f.className = "kodefeed err"; return; }
+  try{
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(v));
+    const hex = [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2,"0")).join("");
+    if(KODE_HASH.includes(hex)){
+      localStorage.setItem("cc_unlocked","1");
+      f.textContent = "Kode benar! Semua permainan terbuka 🎉"; f.className = "kodefeed ok";
+      speak("Hore! Semua permainan sudah terbuka.");
+      confetti(16);
+      buildMenu();
+      setTimeout(() => {
+        tutupKunci();
+        if(pendingAct){ const p = pendingAct; pendingAct = null; startGame(p); }
+      }, 900);
+    } else {
+      f.textContent = "Kode tidak cocok. Periksa lagi hurufnya ya."; f.className = "kodefeed err";
+    }
+  }catch(e){
+    f.textContent = "Ada gangguan saat memeriksa kode. Coba lagi."; f.className = "kodefeed err";
+  }
+}
+function segarProCard(){
+  const c = $("#proCard");
+  if(sudahBuka()){
+    c.innerHTML = `<div class="hello">🌟 Versi Penuh Aktif</div><p class="note">Semua 19 permainan terbuka untuk anak. Selamat bermain dan belajar!</p>`;
+  } else {
+    c.innerHTML = `<div class="hello">🎁 Ini Versi DEMO Gratis</div><p class="note">6 dari 19 permainan terbuka untuk dicoba. Buka semuanya dengan kode akses — sekali bayar, akses selamanya.</p><button class="btn violet" id="btnProBuka">🔓 Buka Versi Penuh</button>`;
+    $("#btnProBuka").onclick = () => tampilKunci(null);
+  }
+}
+
 /* ================= navigasi layar ================= */
 function show(id){
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
@@ -458,8 +553,10 @@ function buildMenu(){
     const grid = document.createElement("div"); grid.className = "grid";
     for(const a of ACTS.filter(x => x.group === g.id)){
       const b = document.createElement("button"); b.className = "act";
-      b.innerHTML = `<span class="ic">${a.icon}</span><span class="nm">${a.name}</span><span class="ds">${a.desc}</span>`;
-      b.onclick = () => startGame(a);
+      const kunci = terkunci(a);
+      if(kunci) b.classList.add("locked");
+      b.innerHTML = `<span class="ic">${a.icon}</span><span class="nm">${a.name}</span><span class="ds">${a.desc}</span>` + (kunci ? `<span class="lk">🔒 Versi Penuh</span>` : "");
+      b.onclick = () => { if(terkunci(a)) tampilKunci(a); else startGame(a); };
       grid.appendChild(b);
     }
     host.appendChild(grid);
@@ -471,6 +568,7 @@ function buildMenu(){
   b.onclick = startTrace;
   grid.appendChild(b);
   host.appendChild(grid);
+  segarProCard();
 }
 
 /* ================= mesin permainan ================= */
@@ -615,6 +713,11 @@ function traceEnd(){ if(T) T.drawing = false; }
     speak(v ? `Halo ${v}! Ayo bermain dan belajar!` : "Halo! Ayo bermain dan belajar!");
   };
 })();
+
+$("#btnKode").onclick = cekKode;
+$("#btnTutupModal").onclick = () => { pendingAct = null; tutupKunci(); };
+$("#kodeInput").addEventListener("keydown", e => { if(e.key === "Enter") cekKode(); });
+$("#unlockModal").addEventListener("click", e => { if(e.target.id === "unlockModal"){ pendingAct = null; tutupKunci(); } });
 
 buildMenu();
 if("serviceWorker" in navigator && location.protocol.startsWith("http")){
